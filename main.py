@@ -27,3 +27,14 @@ def create_connection():
         print(f"SQL State: {e.sqlstate}")
         print(f"Error Message: {e.msg}")
     return connection
+
+def main():
+    connection = create_connection()
+    if connection is None:
+        return
+    
+    connection.close()
+    print("Goodbye!")
+    
+if __name__ == "__main__":
+    main()
