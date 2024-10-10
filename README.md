@@ -50,61 +50,28 @@ We chose **SQL (MySQL)** for this project because of its relational data managem
 - Python (for the backend API connection).
 - Node.js and npm (for the frontend React application).
 ---
-### 1. Install MySQL
-You can download and install MySQL from the official website: [MySQL Download](https://dev.mysql.com/downloads/). Ensure that MySQL is running.
 
 ---
-### 2. Connect to the Database
-You can connect using MySQL Workbench or through a command line:
+### 1. Clone this repository or download the source code.
 
-```bash
-mysql -u hold -p -h ip_address -P 3306
+```bash 
+git clone https://github.com/khat3r/HODL-Up-.git 
 ```
 ---
-### 3. Create the Database and Tables
----
+### 2. Install the required packages:  
 
-### 4. Connect the Database to the Python Backend
-Use the following Python code to connect your backend to the MySQL database. Ensure you load your credentials securely (e.g., using environment variables from a `.env` file).
 ```bash
-pip install mysql-connector-python
-```
-
-Then, in your Python script `(backend.py)`, connect to the database:
-```bash
-import os
-import mysql.connector
-from dotenv import load_dotenv
-
-load_dotenv()  # Load environment variables from a .env file
-
-db = mysql.connector.connect(
-    host=os.getenv("DB_HOST"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASS"),
-    database=os.getenv("DB_NAME")
-)
+pip install -r requirements.txt
 ```
 ---
-### 5. Frontend Setup (React)
-To set up the frontend:
+### 3. Create a .env file and replcae the following placeholders with the acutal SQL connection credentials (included in the lytespace submission). 
 
-1. Ensure Node.js and npm are installed on your system.
-2. Navigate to your frontend project directory and run:
 ```bash
-npm install
-```
-3. Start the React development server:
-```bash
-npm start
+DB_HOST=your_mysql_host
+DB_USER=your_mysql_username
+DB_PASS=your_mysql_password
+DB_NAME=your_database_name
 ```
 ---
-### 6. Running the Application
-- Ensure MySQL is running and the database is set up.
-- Run the backend Python API to handle requests and manage alerts.
-- The React frontend can be accessed via localhost:3000 once the development server is started.
----
-### 7. Testing the Application
-- Create sample users and alerts.
-- Test notifications by simulating price thresholds or percentage changes.
-- Verify that notifications are delivered via your chosen third-party integrations (Telegram, Slack, etc.).
+### 4. Save and close the .env file. Please ensure that it is included in your .gitignore file as it contians sensitive information that cannot be leaked (if you successfully cloned this repository, .env file should be already included in the .gitignore file)  
+
