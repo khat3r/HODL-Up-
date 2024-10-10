@@ -111,13 +111,73 @@ def create_table(connection):
     except Error as e:
         print(f"Error creating 'notification' table: {e}")
         
+def insert_sample_data(connection):
+    # Sample Users with random user_id
+    users_query = """
+    INSERT INTO users (user_id, email, phone_nunmber) 
+    VALUES 
+    (1, 'user1@example.com', '1234567890'),
+    (2, 'user2@example.com', '2345678901'),
+    (3, 'user3@example.com', '3456789012')
+"""
+    
+    # Sample Cryptocurrencies
+    cryptocurrencies_query = """
+    INSERT INTO cryptocurrencies (crypto_id, name, market_cap, hourly_price, time_updated, hourly_percentage) 
+    VALUES 
+    (1, 'Bitcoin', 600000000000, 30000, NOW(), 1.5),
+    (2, 'Ethereum', 250000000000, 1800, NOW(), -2.3),
+    (3, 'Cardano', 50000000000, 0.50, NOW(), 0.8)
+    """
+    
+    # Sample Alerts
+    alerts_query = """
+    INSERT INTO alerts (user_id, crypto_id, threshold_price, threshold_percentage, method, notification_method)
+    VALUES 
+    (1, 1, 35000, 5.00, 'above', 'email'),
+    (2, 2, 1500, -3.00, 'below', 'sms'),
+    (3, 3, 1.00, 10.00, 'above', 'email')
+    """
+    
+    # Sample Notifications
+    
+    notifications_query = """
+    INSERT INTO notifications (alert_id, message, notification_method, sent_at)
+    VALUES 
+    ((SELECT alert_id FROM alerts WHERE user_id = 1 AND crypto_id = 1), 'Bitcoin price exceeded $35,000.', 'email', '2024-10-01 12:30:00'),
+    ((SELECT alert_id FROM alerts WHERE user_id = 2 AND crypto_id = 2), 'Ethereum price dropped below $1,500.', 'sms', '2024-10-01 13:45:00'),
+    ((SELECT alert_id FROM alerts WHERE user_id = 3 AND crypto_id = 3), 'Cardano price exceeded $1.00.', 'email', '2024-10-02 10:00:00')
+    """
+    
+    try:
+        with connection.cursor() as cursor:
+            # Insert Users
+            cursor.execute(users_query)
+            
+            # Insert Cryptocurrencies
+            cursor.execute(cryptocurrencies_query)
+            
+            # Insert Alerts
+            cursor.execute(alerts_query)
+            
+            # Insert Notifications
+            cursor.execute(notifications_query)
+            
+            connection.commit()
+            print("Sample data inserted successfully")
+    except Error as e:
+        print(f"Error inserting sample data: {e}")
 
 def main():
     connection = create_connection()
     if connection is None:
         return
     
+    #create tables 
     create_table(connection)
+    
+    # Insert sample data
+    insert_sample_data(connection)
     
     connection.close()
     print("Goodbye!")
