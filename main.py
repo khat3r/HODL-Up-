@@ -34,7 +34,8 @@ def create_table(connection):
         user_id INT AUTO_INCREMENT PRIMARY KEY,
         email VARCHAR(255) UNIQUE NOT NULL,
         phone_nunmber VARCHAR(20), 
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
     """
     
@@ -54,7 +55,8 @@ def create_table(connection):
         user_id INT,
         crypto_id INT,
         threshold_price DECIMAL(18, 2),
-        condition ENUM('above', 'below') NOT NULL,
+        threshold_percentage DECIMAL(5, 2),
+        method ENUM('above', 'below') NOT NULL,
         notification_method ENUM('email', 'sms', 'push') NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -62,13 +64,15 @@ def create_table(connection):
         FOREIGN KEY (crypto_id) REFERENCES cryptocurrencies(crypto_id) ON DELETE CASCADE
     )
     """
-    create_notification_table_query = """
-    CREATE TABLE IF NOT EXISTS notification (
+
+    create_notifications_table_query = """
+    CREATE TABLE IF NOT EXISTS notifications (
         notification_id INT AUTO_INCREMENT PRIMARY KEY,
         alert_id INT,
         message TEXT,
+        notification_method ENUM('email', 'sms', 'push') NOT NULL,
         sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (alert_id) REFERENCES zlerts(alert_id) ON DELETE CASCADE
+        FOREIGN KEY (alert_id) REFERENCES alerts(alert_id) ON DELETE CASCADE
     )
     """
     # error handling for users table 
@@ -78,40 +82,42 @@ def create_table(connection):
             connection.commit()
             print("Table 'users' created successfully")
     except Error as e:
-        print(f"Error creating table: {e}")
+        print(f"Error creating 'users' table: {e}")
     
     #error handling for cryptocurrencies table 
     try:
         with connection.cursor() as cursor:
             cursor.execute(create_cryptocurrencies_table_query)
             connection.commit()
-            print("Table 'users' created successfully")
+            print("Table 'cryptocurrencies' created successfully")
     except Error as e:
-        print(f"Error creating table: {e}")
+        print(f"Error creating 'cryptocurrencies' table: {e}")
     
     #error handling for alerts table 
     try:
         with connection.cursor() as cursor:
             cursor.execute(create_alerts_table_query)
             connection.commit()
-            print("Table 'users' created successfully")
+            print("Table 'alerts' created successfully")
     except Error as e:
-        print(f"Error creating table: {e}")
+        print(f"Error creating 'alerts' table: {e}")
     
      #error handling for notifications table 
     try:
         with connection.cursor() as cursor:
-            cursor.execute(create_notification_table_query)
+            cursor.execute(create_notifications_table_query)
             connection.commit()
-            print("Table 'users' created successfully")
+            print("Table 'notification' created successfully")
     except Error as e:
-        print(f"Error creating table: {e}")
+        print(f"Error creating 'notification' table: {e}")
         
 
 def main():
     connection = create_connection()
     if connection is None:
         return
+    
+    create_table(connection)
     
     connection.close()
     print("Goodbye!")
